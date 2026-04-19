@@ -13,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
     private final CategoryService categoryService;
+
     @GetMapping
     public ApiResponse<List<CategoryDTO>> findAll() {
         return ApiResponse.<List<CategoryDTO>>builder()
@@ -22,7 +23,7 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public ApiResponse<CategoryDTO> createCategory(CategoryDTO categoryDTO) {
+    public ApiResponse<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
         return ApiResponse.<CategoryDTO>builder()
                 .message("Tạo loại tranh thành công")
                 .data(categoryService.createCategory(categoryDTO))
@@ -30,7 +31,8 @@ public class CategoryController {
     }
 
     @PutMapping
-    public ApiResponse<CategoryDTO> updateCategory(@RequestBody CategoryDTO categoryDTO, @RequestParam String categoryId)  {
+    public ApiResponse<CategoryDTO> updateCategory(@RequestBody CategoryDTO categoryDTO,
+            @RequestParam String categoryId) {
         return ApiResponse.<CategoryDTO>builder()
                 .message("Cập nhật loại tranh thành công")
                 .data(categoryService.updateCategory(categoryId, categoryDTO))

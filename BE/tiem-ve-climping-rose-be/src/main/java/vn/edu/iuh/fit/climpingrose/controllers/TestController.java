@@ -18,10 +18,10 @@ public class TestController {
     @GetMapping
     public ApiResponse<TestDto> test() {
         return ApiResponse.<TestDto>builder()
-                .message("Thông báo Zy cute thành công")
+                .message("Tài khoản có tồn tai")
                 .data(TestDto.builder()
-                        .name("Zy")
-                        .description("Cute")
+                        .name("Ok")
+                        .description("Done")
                         .build())
                 .build();
     }

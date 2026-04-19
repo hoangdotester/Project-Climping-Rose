@@ -57,7 +57,6 @@ public class AuthenticationService {
     @Value("${google.googleClientId}")
     private String googleClientId;
 
-
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
@@ -80,7 +79,6 @@ public class AuthenticationService {
 
     @Value("${facebook.client-secret}")
     private String facebookClientSecret;
-
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
@@ -109,7 +107,8 @@ public class AuthenticationService {
 
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
-        if (!authenticated) throw new UnauthorizedException("Sai tên đăng nhập hoặc mật khẩu");
+        if (!authenticated)
+            throw new UnauthorizedException("Sai tên đăng nhập hoặc mật khẩu");
 
         var token = generateToken(user);
 
@@ -127,10 +126,9 @@ public class AuthenticationService {
             String jit = signToken.getJWTClaimsSet().getJWTID();
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
 
-            InvalidatedToken invalidatedToken =
-                    InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+            InvalidatedToken invalidatedToken = InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
 
-//            invalidatedTokenRepository.save(invalidatedToken);
+            // invalidatedTokenRepository.save(invalidatedToken);
             redisService.saveInvalidatedToken(jit, request.getToken());
         } catch (UnauthorizedException exception) {
 
@@ -144,19 +142,21 @@ public class AuthenticationService {
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
         var expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
-        InvalidatedToken invalidatedToken =
-                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
 
-//        invalidatedTokenRepository.save(invalidatedToken);
+        // invalidatedTokenRepository.save(invalidatedToken);
 
         if (redisService.isTokenInvalidated(jit)) {
             throw new UnauthorizedException("Token đã bị vô hiệu hóa");
         }
 
+        redisService.saveInvalidatedToken(jit, request.getToken());
+        log.info("Token {} đã được đưa vào danh sách đen sau khi Refresh", jit);
+
         var username = signedJWT.getJWTClaimsSet().getSubject();
 
-        var user =
-                userRepository.findByUsername(username).orElseThrow(() -> new UnauthorizedException("Sai tên đăng nhập hoặc mật khẩu"));
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UnauthorizedException("Sai tên đăng nhập hoặc mật khẩu"));
 
         var token = generateToken(user);
 
@@ -224,7 +224,6 @@ public class AuthenticationService {
         return signedJWT;
     }
 
-
     private String buildScope(User user) {
         if (user.getRole() == null) {
             return "";
@@ -233,10 +232,10 @@ public class AuthenticationService {
         return "ROLE_" + user.getRole().name();
     }
 
-
     public AuthenticationResponse loginWithGoogle(String idToken) {
         try {
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance())
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+                    GsonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(googleClientId))
                     .build();
 
@@ -259,10 +258,9 @@ public class AuthenticationService {
                 throw new ConflicException("Email already exists with different provider");
             }
 
-
             var accessToken = generateToken(user);
 
-            return  AuthenticationResponse.builder()
+            return AuthenticationResponse.builder()
                     .token(accessToken)
                     .authenticated(true)
                     .user(userMapper.toUserResponse(user))
@@ -270,7 +268,6 @@ public class AuthenticationService {
         } catch (Exception e) {
             throw new BadRequestException("Lỗi xác thực token: " + e.getMessage());
         }
-
 
     }
 
@@ -286,7 +283,6 @@ public class AuthenticationService {
                 .contact(email)
                 .build();
         return userRepository.save(user);
-
 
     }
 
@@ -305,18 +301,17 @@ public class AuthenticationService {
             String name = (String) data.get("name");
             String email = (String) data.get("email");
             String facebookLink = (String) data.get("link");
-            String picture = (String) ((Map<String, Object>) ((Map<String, Object>) data.get("picture")).get("data")).get("url");
+            String picture = (String) ((Map<String, Object>) ((Map<String, Object>) data.get("picture")).get("data"))
+                    .get("url");
 
             // Kiểm tra hoặc tạo người dùng mới
             User user = (User) userRepository.findByEmail(email)
                     .orElseGet(() -> createFacebookUser(email, name, picture, facebookLink));
 
-
-
             var accessTokenServerReturn = generateToken(user);
 
             UserResponse userResponse = userMapper.toUserResponse(user);
-            return  AuthenticationResponse.builder()
+            return AuthenticationResponse.builder()
                     .token(accessTokenServerReturn)
                     .authenticated(true)
                     .user(userMapper.toUserResponse(user))
@@ -340,7 +335,6 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-
     public void processForgotPassword(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         if (user.isEmpty()) {
@@ -351,9 +345,10 @@ public class AuthenticationService {
         Long lastSentTime = redisService.getLong(otpRateLimitKey);
         long now = System.currentTimeMillis();
 
-//        if (lastSentTime != null && (now - lastSentTime) < 3600_000) { // 1 giờ
-//            throw new BadRequestException("Bạn chỉ có thể yêu cầu gửi OTP mỗi 1 giờ. Vui lòng thử lại sau.");
-//        }
+        // if (lastSentTime != null && (now - lastSentTime) < 3600_000) { // 1 giờ
+        // throw new BadRequestException("Bạn chỉ có thể yêu cầu gửi OTP mỗi 1 giờ. Vui
+        // lòng thử lại sau.");
+        // }
 
         String otpCode = OtpUtils.generateOtp();
 
@@ -369,7 +364,8 @@ public class AuthenticationService {
         String email = otpRequest.getEmail();
         String newPassword = otpRequest.getNewPassword();
 
-        User user = (User) userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng với email: " + email));
+        User user = (User) userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng với email: " + email));
 
         String storedOtp = redisService.getOtp(email);
         if (storedOtp == null) {
