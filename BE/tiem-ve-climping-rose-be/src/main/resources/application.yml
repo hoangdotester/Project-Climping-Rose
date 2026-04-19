@@ -10,14 +10,23 @@ spring:
   jackson:
     time-zone: UTC
   mail:
-    host: smtp.gmail.com
-    port: 465
+    # host: smtp.gmail.com
+    # port: 465
+    # username: ${MAIL_USERNAME}
+    # password: ${MAIL_PASSWORD}
+    # properties:
+    #   mail.smtp.auth: true
+    #   mail.smtp.ssl.enable: true
+    #   mail.smtp.starttls.enable: false
+
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
       mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.starttls.enable: false
+      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.enable: false
 
   datasource:
     url: ${DB_URL}

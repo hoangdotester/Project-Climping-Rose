@@ -11,6 +11,8 @@ import vn.edu.iuh.fit.climpingrose.dtos.responses.AuthenticationResponse;
 import vn.edu.iuh.fit.climpingrose.dtos.responses.IntrospectResponse;
 import vn.edu.iuh.fit.climpingrose.services.AuthenticationService;
 
+import vn.edu.iuh.fit.climpingrose.dtos.requests.VerifyOtpRequest;
+
 import java.text.ParseException;
 import java.util.Map;
 
@@ -49,7 +51,8 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    ResponseEntity<ApiResponse<AuthenticationResponse>> refresh(@RequestBody @Valid RefreshRequest request) throws ParseException, JOSEException {
+    ResponseEntity<ApiResponse<AuthenticationResponse>> refresh(@RequestBody @Valid RefreshRequest request)
+            throws ParseException, JOSEException {
         var result = authenticationService.refreshToken(request);
         return ResponseEntity.ok(ApiResponse.<AuthenticationResponse>builder()
                 .message("Làm mới token thành công")
@@ -94,5 +97,13 @@ public class AuthController {
                 .build();
     }
 
+    @PostMapping("/verify-otp")
+    public ApiResponse<Boolean> verifyOtp(@RequestBody VerifyOtpRequest request) {
+        boolean isValid = authenticationService.verifyOtp(request.getEmail(), request.getOtp());
+        return ApiResponse.<Boolean>builder()
+                .data(isValid)
+                .message(isValid ? "Mã OTP chính xác" : "Mã OTP không đúng hoặc đã hết hạn")
+                .build();
+    }
 
 }

@@ -384,4 +384,14 @@ public class AuthenticationService {
         redisService.deleteOtp(email);
 
     }
+
+    public boolean verifyOtp(String email, String otp) {
+        String storedOtp = redisService.getOtp(email);
+
+        if (storedOtp != null && storedOtp.equals(otp)) {
+            redisService.deleteOtp(email);
+            return true;
+        }
+        return false;
+    }
 }
