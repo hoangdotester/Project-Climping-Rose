@@ -36,7 +36,7 @@ import { log } from "console";
 import { Button } from "@/components/ui/button";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const sizeOptions = ["20x20", "30x40", "40x50", "ART_SUPPLIES"];
+const sizeOptions = ["20x20", "30x40", "40x50", "Dụng cụ"];
 const PaintingsPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -400,9 +400,8 @@ const PaintingsPage = () => {
                     ) : (
                       <button
                         onClick={() => setPage(p as number)}
-                        className={`px-3 py-1 border rounded ${
-                          page === p ? "bg-red-300 text-white" : ""
-                        }`}
+                        className={`px-3 py-1 border rounded ${page === p ? "bg-red-300 text-white" : ""
+                          }`}
                       >
                         {p}
                       </button>
