@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CouponDTO extends BaseResponse {
-    String couponId;
     String code;
     String imageUrl;
 

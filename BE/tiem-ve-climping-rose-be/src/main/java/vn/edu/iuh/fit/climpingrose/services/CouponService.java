@@ -36,5 +36,10 @@ public class CouponService {
         return couponMapper.toDto(coupon);
     }
 
-
+    public void deleteMultiple(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return;
+        }
+        couponRepository.deleteAllById(ids);
+    }
 }

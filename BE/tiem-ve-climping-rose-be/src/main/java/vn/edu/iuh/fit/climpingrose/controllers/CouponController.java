@@ -40,4 +40,13 @@ public class CouponController {
                 .message("Lấy danh sách coupon thành công")
                 .build();
     }
+
+    @DeleteMapping("/cleanup")
+    public ApiResponse<Void> deleteMultipleCoupons(@RequestBody List<String> ids) {
+        couponService.deleteMultiple(ids);
+        return ApiResponse.<Void>builder()
+                .statusCode(200)
+                .message("Dọn dẹp coupon test thành công")
+                .build();
+    }
 }
