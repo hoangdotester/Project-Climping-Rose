@@ -36,7 +36,8 @@ public class PaintingService {
     private final CategoryRepository categoryRepository;
     private final CategoryPaintingRepository categoryPaintingRepository;
 
-    public PageResponse<PaintingResponse> getAllPaintings(int page, int size, List<String> categoryIds, List<String> sizes, Boolean isActive, String keyword, String sortBy) {
+    public PageResponse<PaintingResponse> getAllPaintings(int page, int size, List<String> categoryIds,
+            List<String> sizes, Boolean isActive, String keyword, String sortBy) {
         if (page <= 0) {
             throw new BadRequestException("Page number must be zero or greater");
         }
@@ -98,13 +99,11 @@ public class PaintingService {
 
         Painting savedPainting = paintingRepository.save(painting);
 
-
         List<CategoryPainting> categoryPaintings = categories.stream()
                 .map(category -> CategoryPainting.builder()
                         .category(category)
                         .painting(savedPainting)
-                        .build(
-                ))
+                        .build())
                 .toList();
 
         categoryPaintingRepository.saveAll(categoryPaintings);
@@ -151,13 +150,10 @@ public class PaintingService {
                 Category category = categoryRepository.findById(categoryId)
                         .orElseThrow(() -> new RuntimeException("Category not found: " + categoryId));
 
-
                 CategoryPainting cp = CategoryPainting.builder()
                         .category(category)
                         .painting(painting)
                         .build();
-
-
 
                 categoryPaintingRepository.save(cp);
                 painting.getCategoryPaintings().add(cp);
@@ -182,9 +178,9 @@ public class PaintingService {
         return sb.toString();
     }
 
-
     private static String normalize(String input) {
-        if (input == null) return "unknown";
+        if (input == null)
+            return "unknown";
 
         // Bỏ dấu tiếng Việt
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);
@@ -197,6 +193,12 @@ public class PaintingService {
         return normalized.toLowerCase();
     }
 
-
-
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deletePainting(String id) {
+        Painting painting = paintingRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("Không tìm thấy tranh với id: " + id));
+        categoryPaintingRepository.deleteByPainting(painting);
+        paintingRepository.delete(painting);
+    }
 }
