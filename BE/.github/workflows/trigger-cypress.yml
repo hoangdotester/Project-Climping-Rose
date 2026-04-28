@@ -1,0 +1,17 @@
+name: Trigger E2E Tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  ping-cypress-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Repository Dispatch Event
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.BE_REPO_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/hoangdotester/DoAnTotNghiep/dispatches \
+          -d '{"event_type": "run-e2e-tests"}'
