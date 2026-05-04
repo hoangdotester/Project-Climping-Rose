@@ -24,3 +24,11 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/hoangdotester/DoAnTotNghiep/dispatches \
           -d '{"event_type": "${{ steps.event_type.outputs.type }}"}'
+
+      - name: Send Signal
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.BE_REPO_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/hoangdotester/DoAnTotNghiep/dispatches \
+          -d "{\"event_type\": \"run-smoke-test\", \"client_payload\": {\"sha\": \"${{ github.sha }}\", \"repo\": \"${{ github.repository }}\"}}"
