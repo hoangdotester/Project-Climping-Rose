@@ -1,26 +1,37 @@
 name: Trigger Tests By Branch
 
 on:
+  # Kích hoạt khi có PR vào nhánh dev hoặc main
+  pull_request:
+    branches: [ "dev", "main" ]
+  # Vẫn giữ kích hoạt khi push trực tiếp (nếu cần)
   push:
-    branches: [ "main", "master", "develop", "feature/*", "fix/*" ]
+    branches: [ "main", "master", "dev" ]
 
 jobs:
   dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Determine Event Type
+      - name: 1. Determine Event Type
         id: event_type
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" || "${{ github.ref }}" == "refs/heads/master" ]]; then
+          if [[ "${{ github.base_ref }}" == "main" || "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "type=run-full-regression" >> $GITHUB_OUTPUT
           else
             echo "type=run-smoke-test" >> $GITHUB_OUTPUT
           fi
 
-      - name: Send Signal to Cypress Repo
+      - name: 2. Send Signal to Cypress Repo
         run: |
+          # Xác định mã SHA chuẩn: Nếu là PR thì lấy SHA của nhánh phụ, nếu là Push thì lấy SHA của commit
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            SHA="${{ github.sha }}"
+          fi
+          
           curl -X POST \
           -H "Authorization: token ${{ secrets.BE_REPO_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/hoangdotester/DoAnTotNghiep/dispatches \
-          -d '{"event_type": "${{ steps.event_type.outputs.type }}"}'
+          -d "{\"event_type\": \"${{ steps.event_type.outputs.type }}\", \"client_payload\": {\"sha\": \"$SHA\", \"repo\": \"${{ github.repository }}\"}}"
