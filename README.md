@@ -65,11 +65,3 @@ Xem tại: https://climpingrose.com
 - Xem doanh thu theo thời gian
 
 ---
-
-
-test linh tinh
-test một chút 
-test lần nữa
-test một chút
-test laanf nuawx ddi
-test commit 123
