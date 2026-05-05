@@ -1,12 +1,12 @@
 name: Trigger Tests By Branch
 
 on:
-  # Kích hoạt khi có PR vào nhánh dev hoặc main
   pull_request:
     branches: [ "dev", "main" ]
-  # Vẫn giữ kích hoạt khi push trực tiếp (nếu cần)
+    types: [opened, synchronize] 
+
   push:
-    branches: [ "main", "master", "dev" ]
+    branches: [ "main", "master" ]
 
 jobs:
   dispatch:
