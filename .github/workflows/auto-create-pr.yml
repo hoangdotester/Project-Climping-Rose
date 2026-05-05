@@ -1,0 +1,32 @@
+name: Auto Create PR from dev* to dev
+
+on:
+  push:
+    branches:
+      - 'dev*' 
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.BE_REPO_TOKEN }} 
+          
+          branch: ${{ github.ref_name }} 
+          
+          base: dev 
+          
+          title: "🚀 [Auto PR] Merge ${{ github.ref_name }} into dev"
+          body: |
+            Yêu cầu gộp code tự động từ hệ thống gác cổng.
+            - Nhánh nguồn: ${{ github.ref_name }}
+            - Nhánh đích: dev
+            - Người thực hiện: Nguyễn Hoàng Đô
+          labels: |
+            automated-pr
+            dynamic-branching
