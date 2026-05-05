@@ -65,7 +65,3 @@ Xem tại: https://climpingrose.com
 - Xem doanh thu theo thời gian
 
 ---
-đây là test push từ dev1 lên dev
-đây là test push từ dev1 lên dev lần 2
-đây là test push từ dev1 lên dev
-đây là test push từ dev1 lên dev lần 2
