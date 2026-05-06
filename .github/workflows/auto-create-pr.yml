@@ -3,9 +3,7 @@ name: Auto Create PR to Dev
 on:
   push:
     branches:
-      - 'dev*' 
-    branches-ignore:
-      - 'dev'
+      - 'dev?*' 
 
 jobs:
   open-pr:
