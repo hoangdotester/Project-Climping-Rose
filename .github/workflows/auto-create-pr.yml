@@ -17,6 +17,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
+
+          if [ "$BRANCH_NAME" == "dev" ]; then
+            echo "Đây là nhánh dev, bỏ qua việc tạo PR."
+            exit 0
+          fi
           
           PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --base dev --json number --jq '.[0].number')
           
