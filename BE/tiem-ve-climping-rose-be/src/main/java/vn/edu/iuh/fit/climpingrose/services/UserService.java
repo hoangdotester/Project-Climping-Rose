@@ -27,14 +27,9 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public List<UserResponse> getUsers() {
-
-        throw new InternalServerErrorException("Lỗi hệ thống giả lập để test CI/CD");// Lỗi hệ thống giả lập để test
-                                                                                     // CI/CD
-
-        // UserResponse userResponse = new UserResponse();
-        // userResponse = userMapper.toUserResponse(userRepository.findAll().get(0));
-        // return
-        // userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+        UserResponse userResponse = new UserResponse();
+        userResponse = userMapper.toUserResponse(userRepository.findAll().get(0));
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     public UserResponse registerUser(UserRegisterRequest request) {
