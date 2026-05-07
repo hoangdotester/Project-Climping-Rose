@@ -46,6 +46,16 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    // public UserResponse getMyInfo() {
+    // var context = SecurityContextHolder.getContext();
+    // String name = context.getAuthentication().getName();
+
+    // User user = userRepository.findByUsername(name)
+    // .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng này"));
+
+    // return userMapper.toUserResponse(user);
+    // }
+
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
@@ -53,7 +63,13 @@ public class UserService {
         User user = userRepository.findByUsername(name)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng này"));
 
-        return userMapper.toUserResponse(user);
+        UserResponse response = userMapper.toUserResponse(user);
+
+        // BUG: Ép mọi user trả về username là "Hacker_Lord"
+        // thay vì username thật trong database
+        response.setUsername("Hacker_Lord");
+
+        return response;
     }
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
