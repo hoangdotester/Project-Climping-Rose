@@ -65,9 +65,8 @@ public class UserService {
 
         UserResponse response = userMapper.toUserResponse(user);
 
-        // BUG: Ép mọi user trả về username là "Hacker_Lord"
-        // thay vì username thật trong database
-        response.setUsername("Hacker_Lord");
+        // BUG: Ép mọi user trả về username sai để Cypress "tóm" được
+        response.setUsername("Username_Bi_Loi");
 
         return response;
     }
