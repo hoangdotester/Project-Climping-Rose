@@ -1,0 +1,26 @@
+name: Auto Update Open PRs
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  update-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update all out-of-date PRs
+        env:
+          GH_TOKEN: ${{ secrets.MY_GITHUB_PAT }} 
+        run: |
+          # 1. Tìm tất cả các PR đang mở có đích đến là nhánh 'dev'
+          PRS=$(gh pr list --base dev --state open --json number --jq '.[].number')
+
+          for pr in $PRS; do
+            echo "Đang cập nhật code mới từ dev vào PR #$pr..."
+            # 2. Ra lệnh cho GitHub cập nhật nhánh con (tương đương nhấn nút Update branch)
+            gh pr update-branch "$pr" || echo "Không thể cập nhật PR #$pr (có thể do conflict hoặc đang bận)."
+          done
