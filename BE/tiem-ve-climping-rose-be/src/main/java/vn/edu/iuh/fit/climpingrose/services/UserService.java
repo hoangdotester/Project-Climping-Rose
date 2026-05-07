@@ -27,12 +27,17 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public List<UserResponse> getUsers() {
-        UserResponse userResponse = new UserResponse();
-        userResponse = userMapper.toUserResponse(userRepository.findAll().get(0));
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+
+        throw new InternalServerErrorException("Lỗi hệ thống giả lập để test CI/CD");// Lỗi hệ thống giả lập để test
+                                                                                     // CI/CD
+
+        // UserResponse userResponse = new UserResponse();
+        // userResponse = userMapper.toUserResponse(userRepository.findAll().get(0));
+        // return
+        // userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
-    public UserResponse registerUser(UserRegisterRequest request){
+    public UserResponse registerUser(UserRegisterRequest request) {
         String username = request.getUsername();
         if (userRepository.existsByUsername(username)) {
             throw new InternalServerErrorException("Tên đăng nhập đã tồn tại");
@@ -45,7 +50,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userMapper.toUserResponse(userRepository.save(user));
     }
-
 
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
@@ -69,7 +73,6 @@ public class UserService {
         userRepository.save(user);
         return userMapper.toUserResponse(user);
     }
-
 
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
