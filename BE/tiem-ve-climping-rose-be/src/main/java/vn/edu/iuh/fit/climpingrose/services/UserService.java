@@ -56,21 +56,6 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    // public UserResponse getMyInfo() {
-    // var context = SecurityContextHolder.getContext();
-    // String name = context.getAuthentication().getName();
-
-    // User user = userRepository.findByUsername(name)
-    // .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng này"));
-
-    // UserResponse response = userMapper.toUserResponse(user);
-
-    // // BUG: Ép mọi user trả về username sai để Cypress "tóm" được
-    // response.setUsername("Username_Bi_Loi");
-
-    // return response;
-    // }
-
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy người dùng này!"));
