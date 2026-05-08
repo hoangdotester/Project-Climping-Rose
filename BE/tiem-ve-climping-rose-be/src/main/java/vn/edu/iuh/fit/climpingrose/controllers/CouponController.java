@@ -23,7 +23,7 @@ public class CouponController {
                 .build();
     }
 
-    @PostMapping("/creates") // test only
+    @PostMapping("/create")
     public ApiResponse<CouponDTO> createCoupon(@RequestBody CouponDTO request) {
         return ApiResponse.<CouponDTO>builder()
                 .statusCode(200)
