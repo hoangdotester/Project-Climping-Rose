@@ -16,7 +16,7 @@ jobs:
         id: event_type
         run: |
           if [[ "${{ github.base_ref }}" == "main" || "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "type=run-full-regression" >> $GITHUB_OUTPUT
+            echo "type=run-full-regression-test" >> $GITHUB_OUTPUT
           else
             echo "type=run-smoke-test" >> $GITHUB_OUTPUT
           fi
